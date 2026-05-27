@@ -332,14 +332,13 @@ export default function LoginPage() {
             <span>Back to Home</span>
           </Link>
           <div className="mb-8 flex flex-col gap-4">
-            <div className="flex items-center h-[85px] w-[240px] pb-3 overflow-hidden">
+            <div className="flex items-center h-[85px] w-[240px] pb-3">
               <img
                 src={logo}
                 alt="FinTrade"
-                className="h-full w-full object-contain scale-[3.5] -translate-x-4 -translate-y-1.5"
+                className="h-16 w-auto object-contain"
                 style={{
-                  filter: "invert(1) hue-rotate(180deg) brightness(1.35) contrast(1.05) drop-shadow(0 4px 12px rgba(255,255,255,0.08))",
-                  transformOrigin: "center center"
+                  filter: "brightness(0) invert(1) drop-shadow(0 4px 12px rgba(255,255,255,0.08))"
                 }}
               />
             </div>
@@ -379,14 +378,13 @@ export default function LoginPage() {
               <ArrowLeft size={20} />
               <span>Back to Home</span>
             </Link>
-            <div className="flex items-center h-[45px] w-[140px] overflow-hidden">
+            <div className="flex items-center h-[45px] w-[140px]">
               <img
                 src={logo}
                 alt="FinTrade"
-                className="h-full w-full object-contain scale-[2.5] -translate-x-1"
+                className="h-10 w-auto object-contain"
                 style={{
-                  filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.08))",
-                  transformOrigin: "center center"
+                  filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.08))"
                 }}
               />
             </div>

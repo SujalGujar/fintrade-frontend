@@ -215,7 +215,7 @@ export function DashboardLayout({
           >
             {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <img src={logo} alt="FinTrade" className="h-10" />
+          <img src={logo} alt="FinTrade" className="h-10 w-auto object-contain" />
         </div>
 
         {/* Profile icon (mobile) */}
@@ -293,17 +293,13 @@ export function DashboardLayout({
           style={{ background: "#ECE8DD" }}
         >
           {/* Sidebar Logo */}
-          <div className="p-6 border-b border-[#0B2A5B]/10 hidden lg:block overflow-hidden">
-            <div className="flex items-center justify-center overflow-hidden" style={{ height: 60 }}>
+          <div className="p-6 border-b border-[#0B2A5B]/10 hidden lg:block">
+            <div className="flex items-center justify-center" style={{ height: 60 }}>
               <Link to="/" className="flex items-center justify-center h-full w-full">
                 <img
                   src={logo}
                   alt="FinTrade"
-                  className="h-full w-full object-contain"
-                  style={{
-                    transform: "scale(3.5) translateY(-4px)",
-                    transformOrigin: "center center"
-                  }}
+                  className="h-12 w-auto object-contain"
                 />
               </Link>
             </div>

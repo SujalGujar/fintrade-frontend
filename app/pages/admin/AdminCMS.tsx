@@ -42,11 +42,26 @@ interface ShowcaseVideo {
   url: string;
 }
 
+interface Slide {
+  title: string;
+  subtitle: string;
+  button_text: string;
+  action: string;
+  bg_image?: string;
+}
+
+interface Metric {
+  value: string;
+  label: string;
+}
+
 interface LandingConfig {
   hero?: { title: string; highlight: string; subtitle: string; badge: string };
   contact?: { phone: string; phone_href: string };
   social?: { instagram: string; facebook: string; youtube: string; linkedin: string };
   showcase_videos?: ShowcaseVideo[];
+  slides?: Slide[];
+  metrics?: Metric[];
 }
 
 // ── Sub-components ────────────────────────────────────────────────────
@@ -407,7 +422,8 @@ export default function AdminCMS() {
 
       {/* ── TAB: Site Settings ────────────────────────────────────── */}
       {activeTab === "settings" && !configLoading && (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
           {/* Hero Section */}
           <Card className="p-6 border border-gray-100 shadow-sm">
             <h2 className="text-base font-bold mb-4 flex items-center gap-2" style={{ color: "#121212" }}>
@@ -513,7 +529,191 @@ export default function AdminCMS() {
             </Card>
           </div>
         </div>
-      )}
+
+        {/* Carousel Slides */}
+        <Card className="p-6 border border-gray-100 shadow-sm mt-6">
+          <h2 className="text-base font-bold mb-4 flex items-center justify-between" style={{ color: "#121212" }}>
+            <span className="flex items-center gap-2">
+              <Globe size={16} className="text-[#E53935]" /> Hero Carousel Slides
+            </span>
+            <Button
+              size="sm"
+              onClick={() => {
+                const currentSlides = config.slides || [];
+                const newSlide = {
+                  title: "New Slide Title",
+                  subtitle: "New Slide Subtitle",
+                  button_text: "Action Button",
+                  action: "scroll_courses"
+                };
+                setConfig(p => ({ ...p, slides: [...currentSlides, newSlide] }));
+              }}
+              className="bg-green-600 text-white hover:bg-green-700 h-8 px-3 rounded-lg flex items-center gap-1 border-none"
+            >
+              <Plus size={14} /> Add Slide
+            </Button>
+          </h2>
+
+          <div className="space-y-4">
+            {!(config.slides && config.slides.length > 0) ? (
+              <div className="text-center py-6 text-gray-400 text-sm">
+                No slides configured. Add a slide or save to use default slides.
+              </div>
+            ) : (
+              config.slides.map((slide, idx) => (
+                <div key={idx} className="p-4 rounded-xl border border-gray-200 bg-gray-50/30 relative">
+                  <button
+                    onClick={() => {
+                      const currentSlides = [...(config.slides || [])];
+                      currentSlides.splice(idx, 1);
+                      setConfig(p => ({ ...p, slides: currentSlides }));
+                    }}
+                    className="absolute top-4 right-4 text-red-500 hover:text-red-700 p-1 bg-white border border-gray-200 rounded-lg hover:shadow transition-all cursor-pointer"
+                    title="Delete Slide"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                  <h3 className="text-xs font-extrabold text-[#E53935] mb-3 uppercase tracking-wider">Slide {idx + 1}</h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Slide Title</Label>
+                      <Input
+                        value={slide.title}
+                        onChange={e => {
+                          const currentSlides = [...(config.slides || [])];
+                          currentSlides[idx] = { ...currentSlides[idx], title: e.target.value };
+                          setConfig(p => ({ ...p, slides: currentSlides }));
+                        }}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Button Text</Label>
+                      <Input
+                        value={slide.button_text}
+                        onChange={e => {
+                          const currentSlides = [...(config.slides || [])];
+                          currentSlides[idx] = { ...currentSlides[idx], button_text: e.target.value };
+                          setConfig(p => ({ ...p, slides: currentSlides }));
+                        }}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Slide Subtitle</Label>
+                      <Input
+                        value={slide.subtitle}
+                        onChange={e => {
+                          const currentSlides = [...(config.slides || [])];
+                          currentSlides[idx] = { ...currentSlides[idx], subtitle: e.target.value };
+                          setConfig(p => ({ ...p, slides: currentSlides }));
+                        }}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Button Action</Label>
+                      <select
+                        value={slide.action}
+                        onChange={e => {
+                          const currentSlides = [...(config.slides || [])];
+                          currentSlides[idx] = { ...currentSlides[idx], action: e.target.value };
+                          setConfig(p => ({ ...p, slides: currentSlides }));
+                        }}
+                        className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm shadow-sm focus:border-[#E53935] focus:outline-none focus:ring-1 focus:ring-[#E53935]"
+                      >
+                        <option value="scroll_courses">Scroll to Courses (#courses)</option>
+                        <option value="simulator">Go to Simulator (/student/simulator)</option>
+                        <option value="lectures">Go to Live Lectures (/student/lectures)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label>Background Image (Optional)</Label>
+                      <Input
+                        value={slide.bg_image || ""}
+                        onChange={e => {
+                          const currentSlides = [...(config.slides || [])];
+                          currentSlides[idx] = { ...currentSlides[idx], bg_image: e.target.value };
+                          setConfig(p => ({ ...p, slides: currentSlides }));
+                        }}
+                        placeholder="e.g. /background image.webp"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+            <Button
+              size="sm"
+              onClick={() => saveConfig({ slides: config.slides })}
+              className="bg-[#E53935] text-white hover:bg-[#b71c1c] w-full"
+              disabled={!(config.slides && config.slides.length > 0)}
+            >
+              <Save size={14} className="mr-1" /> Save Hero Carousel Slides
+            </Button>
+          </div>
+        </Card>
+
+        {/* Key Metrics */}
+        <Card className="p-6 border border-gray-100 shadow-sm mt-6">
+          <h2 className="text-base font-bold mb-4 flex items-center gap-2" style={{ color: "#121212" }}>
+            <Globe size={16} className="text-[#E53935]" /> Platform Key Metrics (4 Slots)
+          </h2>
+
+          <div className="space-y-4">
+            {!(config.metrics && config.metrics.length > 0) ? (
+              <div className="text-center py-6 text-gray-400 text-sm">
+                No metrics configured. Using default system metrics.
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-4">
+                {config.metrics.map((metric, idx) => (
+                  <div key={idx} className="p-4 rounded-xl border border-gray-200 bg-gray-50/30">
+                    <h3 className="text-xs font-extrabold text-[#E53935] mb-3 uppercase tracking-wider">Metric Slot {idx + 1}</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>Value (e.g. 250+)</Label>
+                        <Input
+                          value={metric.value}
+                          onChange={e => {
+                            const currentMetrics = [...(config.metrics || [])];
+                            currentMetrics[idx] = { ...currentMetrics[idx], value: e.target.value };
+                            setConfig(p => ({ ...p, metrics: currentMetrics }));
+                          }}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label>Label (e.g. Traders Trained)</Label>
+                        <Input
+                          value={metric.label}
+                          onChange={e => {
+                            const currentMetrics = [...(config.metrics || [])];
+                            currentMetrics[idx] = { ...currentMetrics[idx], label: e.target.value };
+                            setConfig(p => ({ ...p, metrics: currentMetrics }));
+                          }}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Button
+              size="sm"
+              onClick={() => saveConfig({ metrics: config.metrics })}
+              className="bg-[#E53935] text-white hover:bg-[#b71c1c] w-full"
+              disabled={!(config.metrics && config.metrics.length > 0)}
+            >
+              <Save size={14} className="mr-1" /> Save Key Metrics
+            </Button>
+          </div>
+        </Card>
+      </div>
+    )}
 
       {/* ── TAB: Showcase Videos ──────────────────────────────────── */}
       {activeTab === "videos" && !configLoading && (

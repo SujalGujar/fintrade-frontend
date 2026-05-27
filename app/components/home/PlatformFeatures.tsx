@@ -12,7 +12,7 @@ const features = [
 
 export default function PlatformFeatures() {
   return (
-    <section className="py-20 bg-white relative z-10">
+    <section className="py-8 bg-white relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-block px-4 py-2 rounded-full mb-4 border border-[#D50032]/30" style={{ background: "rgba(213,0,50,0.08)" }}>

@@ -35,7 +35,7 @@ export default function ModuleRoadmap() {
   }, []);
 
   return (
-    <section className="py-4 relative z-10" style={{ background: "linear-gradient(to bottom, transparent, rgba(213,0,50,0.02), transparent)" }}>
+    <section className="py-4 relative z-10 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-6">
           <div className="inline-block px-4 py-2 rounded-full mb-2 border border-[#D50032]/30" style={{ background: "rgba(213,0,50,0.08)" }}>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router";
+import { Link, Outlet, useNavigate, useLocation } from "react-router";
 import { Search, Phone, Instagram, Facebook, Youtube, Linkedin, X, Download, UserCircle, Save, Mail, Smartphone } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
@@ -13,6 +13,8 @@ export default function MarketingLayout() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isHomePage = pathname === "/";
 
   const handleLogout = async () => {
     try {
@@ -151,40 +153,44 @@ export default function MarketingLayout() {
       </div>
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-[100] bg-white/90 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl">
+      <nav className={`sticky top-0 z-[100] transition-all duration-300 ${isHomePage ? "bg-[#0b0f19]/95 border-b border-white/5 shadow-2xl backdrop-blur-xl" : "bg-white/90 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 -translate-x-4 md:-translate-x-8">
-            <div className="flex-shrink-0 flex items-center h-[50px] w-[140px] md:h-[60px] md:w-[220px]">
-              <Link to="/" className="flex items-center justify-center h-full w-full overflow-hidden">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo area */}
+            <div className="flex-shrink-0 flex items-center h-[50px] w-[160px] md:h-[60px] md:w-[220px]">
+              <Link to="/" className="flex items-center justify-start h-full w-full">
                 <img
                   src={logo}
                   alt="FinTrade"
-                  className="h-full w-full object-contain scale-[2.5] md:scale-[3.5] -translate-x-2 md:-translate-x-6 -translate-y-1 md:-translate-y-1.5"
+                  className="h-9 md:h-12 w-auto object-contain"
                   style={{
-                    filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.08))",
-                    transformOrigin: "center center"
+                    filter: isHomePage ? "brightness(0) invert(1) drop-shadow(0 4px 12px rgba(255,255,255,0.08))" : "drop-shadow(0 4px 12px rgba(0,0,0,0.08))"
                   }}
                 />
               </Link>
             </div>
+            
+            {/* Center navigation links */}
             <div className="hidden md:flex items-center gap-8">
-              <Link to="/" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Home</Link>
-              <Link to="/courses" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Courses</Link>
-              <Link to="/markets" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Markets</Link>
-              <Link to="/category/all" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Categories</Link>
-              <Link to="/updates" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Update</Link>
-              <Link to="/blog" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Blog</Link>
-              <a href="/#about" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">About</a>
+              <Link to="/" className={`${isHomePage ? "text-white hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Home</Link>
+              <Link to="/courses" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Courses</Link>
+              <Link to="/markets" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Markets</Link>
+              <Link to="/category/all" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Categories</Link>
+              <Link to="/updates" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Update</Link>
+              <Link to="/blog" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Blog</Link>
+              <Link to="/about" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>About</Link>
             </div>
+            
+            {/* Right icons & login */}
             <div className="flex items-center gap-3">
-              <button onClick={() => setSearchOpen(true)} className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-gray-600 hover:text-[#D50032] hover:bg-[#D50032]/10 transition-all" title="Search">
+              <button onClick={() => setSearchOpen(true)} className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all ${isHomePage ? "text-white/80 hover:text-[#D50032] hover:bg-white/5" : "text-gray-600 hover:text-[#D50032] hover:bg-[#D50032]/10"}`} title="Search">
                 <Search className="h-4 w-4 md:h-5 md:w-5" />
               </button>
               {isAuthenticated ? (
                 <button
                   type="button"
                   onClick={() => setProfileOpen(true)}
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10 transition-all"
+                  className={`w-11 h-11 rounded-full flex items-center justify-center transition-all ${isHomePage ? "text-white/80 hover:text-[#D50032] hover:bg-white/5" : "text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10"}`}
                   title="Profile"
                   aria-label="Profile"
                 >
@@ -192,7 +198,16 @@ export default function MarketingLayout() {
                 </button>
               ) : (
                 <Link to="/login">
-                  <Button variant="ghost" className="text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10" size="lg">Login</Button>
+                  {isHomePage ? (
+                    <Button className="bg-[#D50032] hover:bg-[#FF3D00] text-white rounded-xl shadow-lg shadow-[#D50032]/25 font-bold h-10 px-5 flex items-center gap-1.5 transition-all duration-300">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
+                      </svg>
+                      Login
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" className="text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10" size="lg">Login</Button>
+                  )}
                 </Link>
               )}
             </div>
@@ -286,11 +301,24 @@ export default function MarketingLayout() {
       {/* Footer */}
       <footer className="py-12 relative z-10" style={{ background: "#121212", color: "white" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-5 gap-8 mb-8">
+            <div className="md:col-span-1 flex flex-col items-start gap-4">
+              <div className="h-[45px] flex items-center justify-start">
+                <img
+                  src={logo}
+                  alt="FinTrade"
+                  className="h-10 w-auto object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
+                />
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed max-w-[200px]">
+                India's first structured Prop Trading Academy. Learn, trade, and build a professional trading career.
+              </p>
+            </div>
             <div>
               <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="/#about" className="hover:text-[#D50032] transition-colors">About Us</a></li>
+                <li><Link to="/about" className="hover:text-[#D50032] transition-colors">About Us</Link></li>
                 <li><a href="#" className="hover:text-[#D50032] transition-colors">Careers</a></li>
                 <li><a href="#" className="hover:text-[#D50032] transition-colors">Press</a></li>
                 <li><Link to="/blog" className="hover:text-[#D50032] transition-colors">Blog</Link></li>

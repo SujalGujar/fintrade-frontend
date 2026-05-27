@@ -13,6 +13,7 @@ import MarketsPage from "./pages/MarketsPage";
 import MarketUpdatesPage from "./pages/MarketUpdatesPage";
 import BlogPage from "./pages/BlogPage";
 import MarketingLayout from "./components/MarketingLayout";
+import AboutUs from "./pages/AboutUs";
 
 // Student Pages
 import StudentDashboard from "./pages/student/StudentDashboard";
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
       {
         path: "/blog",
         Component: BlogPage,
+      },
+      {
+        path: "/about",
+        Component: AboutUs,
       },
     ]
   },
@@ -204,7 +209,11 @@ export const router = createBrowserRouter([
     Component: TeacherExams,
   },
   {
-    path: "/teacher/exams/:examId/questions", Component: QuestionBuilder, }, { path: "/admin/exams/:examId/questions",
+    path: "/teacher/exams/:examId/questions",
+    Component: QuestionBuilder,
+  },
+  {
+    path: "/admin/exams/:examId/questions",
     Component: QuestionBuilder,
   },
   {
@@ -276,10 +285,9 @@ export const router = createBrowserRouter([
     path: "/admin/cms",
     Component: AdminCMS,
   },
-  // Distributor Routes
+  // Distributor Pages
   {
     path: "/distributor/dashboard",
     Component: DistributorDashboard,
   },
 ]);
-
