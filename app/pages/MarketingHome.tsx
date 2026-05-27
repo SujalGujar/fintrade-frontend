@@ -70,12 +70,10 @@ function AmbientGlow() {
 
       setBlobs((prev) => [...prev, newBlob]);
 
-
       setTimeout(() => {
         setBlobs((prev) => prev.filter((b) => b.id !== id));
       }, 5000);
-    }, 1800); // Shorter interval (1.8s) for more activity
-
+    }, 1800);
     return () => clearInterval(interval);
   }, []);
 
@@ -455,8 +453,8 @@ export function CourseCard({ course, onEnroll }: { course: any, onEnroll?: () =>
     <>
       <div
         className={`w-full h-full flex flex-col group transition-all duration-300 relative bg-white rounded-[32px] p-8 ${isMostPopular
-            ? "border-2 border-[#FFD2D6] shadow-[0_15px_40px_rgba(213,0,50,0.04)]"
-            : "border border-gray-100 shadow-[0_10px_35px_rgba(0,0,0,0.015)]"
+          ? "border-2 border-[#FFD2D6] shadow-[0_15px_40px_rgba(213,0,50,0.04)]"
+          : "border border-gray-100 shadow-[0_10px_35px_rgba(0,0,0,0.015)]"
           } hover:shadow-2xl hover:scale-[1.01]`}
       >
         {/* Most Popular overlapping badge */}
