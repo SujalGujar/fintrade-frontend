@@ -77,8 +77,8 @@ export default function ExpertProfile() {
   ];
 
   return (
-    <section className="py-8 bg-white relative z-10 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-transparent relative z-10">
+      <div className="w-full">
         
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -100,7 +100,7 @@ export default function ExpertProfile() {
           
           {/* Column 1: Featured Left Tall Card - Het Vyas (lg:col-span-6) */}
           <div className="lg:col-span-6 flex">
-            <div className="w-full bg-white border border-gray-100/90 rounded-[28px] p-8 shadow-[0_12px_40px_rgba(0,0,0,0.012)] hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)] hover:border-[#D50032]/10 transition-all duration-300 flex flex-col justify-between items-stretch">
+            <div className="w-full bg-white border border-gray-100/90 rounded-[28px] p-6 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.012)] hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)] hover:border-[#D50032]/10 transition-all duration-300 flex flex-col justify-between items-stretch">
               <div>
                 
                 {/* Header Profile Info */}
@@ -148,7 +148,7 @@ export default function ExpertProfile() {
               </div>
 
               {/* Read Full Profile Link */}
-              <div className="mt-12 pt-2">
+              <div className="mt-6 pt-1">
                 <button 
                   onClick={() => setActiveLeader(0)}
                   className="text-xs font-black text-[#D50032] tracking-wider uppercase flex items-center gap-1 hover:gap-2 transition-all duration-300 self-start cursor-pointer border-none bg-transparent"
@@ -347,6 +347,6 @@ export default function ExpertProfile() {
           animation: modal-scale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
-    </section>
+    </div>
   );
 }

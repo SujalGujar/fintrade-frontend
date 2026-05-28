@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from "react";
+
 export default function EMIHighlight() {
   const plans = [
     {
@@ -44,6 +46,56 @@ export default function EMIHighlight() {
     }
   ];
 
+  const [activePlanIdx, setActivePlanIdx] = useState(0);
+  const emiScrollRef = useRef<HTMLDivElement>(null);
+  const [isEmiPaused, setIsEmiPaused] = useState(false);
+  const emiTouchTimeoutRef = useRef<any>(null);
+
+  const handleEmiScroll = () => {
+    if (!emiScrollRef.current) return;
+    const container = emiScrollRef.current;
+    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+    const gap = 20; // gap-5 is 20px
+    const scrollLeft = container.scrollLeft;
+    const currentIdx = Math.round(scrollLeft / (cardWidth + gap));
+    if (currentIdx !== activePlanIdx && currentIdx >= 0 && currentIdx < plans.length) {
+      setActivePlanIdx(currentIdx);
+    }
+  };
+
+  const handleEmiTouchStart = () => {
+    setIsEmiPaused(true);
+    if (emiTouchTimeoutRef.current) clearTimeout(emiTouchTimeoutRef.current);
+  };
+
+  const handleEmiTouchEnd = () => {
+    if (emiTouchTimeoutRef.current) clearTimeout(emiTouchTimeoutRef.current);
+    emiTouchTimeoutRef.current = setTimeout(() => {
+      setIsEmiPaused(false);
+    }, 8000);
+  };
+
+  useEffect(() => {
+    if (isEmiPaused) return;
+
+    const timer = setInterval(() => {
+      if (window.innerWidth < 768 && emiScrollRef.current) {
+        const nextIdx = (activePlanIdx + 1) % plans.length;
+        setActivePlanIdx(nextIdx);
+
+        const container = emiScrollRef.current;
+        const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+        const gap = 20;
+        container.scrollTo({
+          left: nextIdx * (cardWidth + gap),
+          behavior: "smooth"
+        });
+      }
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [activePlanIdx, isEmiPaused, plans.length]);
+
   return (
     <section className="py-4 md:py-6 bg-[#fafafa] relative z-10 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,12 +116,19 @@ export default function EMIHighlight() {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid md:grid-cols-3 gap-5 lg:gap-6 max-w-4xl mx-auto items-stretch">
+        <div 
+          ref={emiScrollRef}
+          onScroll={handleEmiScroll}
+          onTouchStart={handleEmiTouchStart}
+          onTouchEnd={handleEmiTouchEnd}
+          className="flex md:grid md:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto md:overflow-x-visible pb-6 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 -mx-4 md:px-0 md:mx-0 items-stretch max-w-4xl mx-auto"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
           {plans.map((plan, index) => {
             return (
               <div
                 key={index}
-                className={`relative bg-white rounded-2xl p-4 sm:p-5 flex flex-col justify-between items-stretch transition-all duration-300 select-none ${
+                className={`min-w-[85vw] sm:min-w-[300px] md:min-w-0 snap-center relative bg-white rounded-2xl p-4 sm:p-5 flex flex-col justify-between items-stretch transition-all duration-300 select-none ${
                   plan.recommended
                     ? "border-2 border-[#D50032] shadow-[0_15px_35px_rgba(213,0,50,0.07)] md:-translate-y-1 z-10"
                     : "border border-gray-100/90 shadow-[0_12px_40px_rgba(0,0,0,0.015)] hover:border-gray-200"
@@ -145,6 +204,38 @@ export default function EMIHighlight() {
                 </div>
 
               </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile Dot Indicators for EMI Section */}
+        <div className="flex md:hidden gap-1.5 justify-center items-center mt-2 w-full">
+          {plans.map((_, idx) => {
+            const isActive = idx === activePlanIdx;
+            return (
+              <button
+                key={idx}
+                onClick={() => {
+                  setIsEmiPaused(true);
+                  setActivePlanIdx(idx);
+                  const container = emiScrollRef.current;
+                  if (container) {
+                    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+                    const gap = 20;
+                    container.scrollTo({
+                      left: idx * (cardWidth + gap),
+                      behavior: "smooth"
+                    });
+                  }
+                  if (emiTouchTimeoutRef.current) clearTimeout(emiTouchTimeoutRef.current);
+                  emiTouchTimeoutRef.current = setTimeout(() => {
+                    setIsEmiPaused(false);
+                  }, 8000);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  isActive ? "w-5 bg-[#D50032]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                }`}
+              />
             );
           })}
         </div>

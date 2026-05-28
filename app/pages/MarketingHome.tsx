@@ -655,6 +655,38 @@ export default function MarketingHome() {
   const [isCoursesPaused, setIsCoursesPaused] = useState(false);
   const touchTimeoutRef = useRef<any>(null);
 
+  // States and refs for premium blog mobile autoslide behavior
+  const blogScrollRef = useRef<HTMLDivElement>(null);
+  const [blogActiveIndex, setBlogActiveIndex] = useState(0);
+  const [isBlogPaused, setIsBlogPaused] = useState(false);
+  const blogTouchTimeoutRef = useRef<any>(null);
+
+  const blogStoriesCount = blogStories.length > 0 ? blogStories.length : 4;
+
+  const handleBlogScroll = () => {
+    if (!blogScrollRef.current) return;
+    const container = blogScrollRef.current;
+    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+    const gap = 16; // gap-4 is 16px
+    const scrollLeft = container.scrollLeft;
+    const currentIdx = Math.round(scrollLeft / (cardWidth + gap));
+    if (currentIdx !== blogActiveIndex && currentIdx >= 0 && currentIdx < blogStoriesCount) {
+      setBlogActiveIndex(currentIdx);
+    }
+  };
+
+  const handleBlogTouchStart = () => {
+    setIsBlogPaused(true);
+    if (blogTouchTimeoutRef.current) clearTimeout(blogTouchTimeoutRef.current);
+  };
+
+  const handleBlogTouchEnd = () => {
+    if (blogTouchTimeoutRef.current) clearTimeout(blogTouchTimeoutRef.current);
+    blogTouchTimeoutRef.current = setTimeout(() => {
+      setIsBlogPaused(false);
+    }, 8000);
+  };
+
   const coursesCount = (apiCourses.length > 0 ? apiCourses : Array(3)).slice(0, 3).length;
 
   // Handle manual scroll synchronization
@@ -692,6 +724,28 @@ export default function MarketingHome() {
     return () => clearInterval(timer);
   }, [activeCourseIdx, isCoursesPaused, coursesCount]);
 
+  // Autoslide Timer on Mobile for Blog section
+  useEffect(() => {
+    if (isBlogPaused) return;
+
+    const timer = setInterval(() => {
+      if (window.innerWidth < 768 && blogScrollRef.current) {
+        const nextIdx = (blogActiveIndex + 1) % blogStoriesCount;
+        setBlogActiveIndex(nextIdx);
+
+        const container = blogScrollRef.current;
+        const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+        const gap = 16;
+        container.scrollTo({
+          left: nextIdx * (cardWidth + gap),
+          behavior: "smooth"
+        });
+      }
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [blogActiveIndex, isBlogPaused, blogStoriesCount]);
+
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -727,9 +781,47 @@ export default function MarketingHome() {
         setMarketUpdates(res.data.filter((n: any) => n.type === "Market Update").slice(0, 1));
       } catch (err) { console.error("News fetch failed", err); }
     };
-    fetchCMSAndNews();
-
   }, []);
+
+  // States and refs for Why Choose FinTrade mobile autoslide
+  const whyChooseScrollRef = useRef<HTMLDivElement>(null);
+  const [whyChooseActiveIndex, setWhyChooseActiveIndex] = useState(0);
+  const [isWhyChoosePaused, setIsWhyChoosePaused] = useState(false);
+  const whyChooseTouchTimeoutRef = useRef<any>(null);
+  const whyChooseCardsCount = 4;
+
+  const handleWhyChooseScroll = () => {
+    if (!whyChooseScrollRef.current) return;
+    const container = whyChooseScrollRef.current;
+    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+    const gap = 24; // md:gap-6 (24px)
+    const scrollLeft = container.scrollLeft;
+    const currentIdx = Math.round(scrollLeft / (cardWidth + gap));
+    if (currentIdx !== whyChooseActiveIndex && currentIdx >= 0 && currentIdx < whyChooseCardsCount) {
+      setWhyChooseActiveIndex(currentIdx);
+    }
+  };
+
+  useEffect(() => {
+    if (isWhyChoosePaused) return;
+
+    const timer = setInterval(() => {
+      if (window.innerWidth < 768 && whyChooseScrollRef.current) {
+        const nextIdx = (whyChooseActiveIndex + 1) % whyChooseCardsCount;
+        setWhyChooseActiveIndex(nextIdx);
+
+        const container = whyChooseScrollRef.current;
+        const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+        const gap = 24;
+        container.scrollTo({
+          left: nextIdx * (cardWidth + gap),
+          behavior: "smooth"
+        });
+      }
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [whyChooseActiveIndex, isWhyChoosePaused]);
 
   // Brochure Download Flow State
   const [brochureOpen, setBrochureOpen] = useState(false);
@@ -1532,25 +1624,6 @@ export default function MarketingHome() {
           `}</style>
           </div>
 
-          {/* Highlight Quote Box */}
-          <div className="max-w-4xl mx-auto mt-2 md:mt-4 px-6">
-            <div className="flex flex-col items-center">
-              {/* Divider dot and lines */}
-              <div className="flex items-center gap-3 mb-6 w-full max-w-[200px]">
-                <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent to-[#D50032]/50" />
-                <div className="w-2 h-2 rounded-full bg-[#D50032]" />
-                <div className="h-[1.5px] flex-1 bg-gradient-to-l from-transparent to-[#D50032]/50" />
-              </div>
-
-              {/* Quote Card */}
-              <div className="w-full py-8 px-10 bg-white border border-gray-100 rounded-[32px] shadow-[0_12px_45px_rgba(0,0,0,0.015)] text-center relative overflow-hidden group hover:border-[#D50032]/10 transition-all duration-500">
-                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#D50032] to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-                <p className="text-xl sm:text-2xl font-black text-gray-900 leading-normal tracking-wide">
-                  "From Knowledge to Action, <span className="text-[#D50032]">We Provide the Direction.</span>"
-                </p>
-              </div>
-            </div>
-          </div>
         </section>
 
         {/* 4. Vertical Video Section */}
@@ -1623,6 +1696,10 @@ export default function MarketingHome() {
 
               {/* Blog Stories (4 Cards) */}
               <div
+                ref={blogScrollRef}
+                onScroll={handleBlogScroll}
+                onTouchStart={handleBlogTouchStart}
+                onTouchEnd={handleBlogTouchEnd}
                 className="lg:col-span-7 flex md:grid md:grid-cols-2 gap-4 overflow-x-auto lg:overflow-x-visible pb-6 lg:pb-0 snap-x snap-mandatory scrollbar-hide px-4 -mx-4 lg:px-0 lg:mx-0 items-stretch"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
@@ -1697,6 +1774,38 @@ export default function MarketingHome() {
                   </Card>
                 ))}
               </div>
+
+              {/* Mobile Dot Indicators for Blog Section */}
+              <div className="flex md:hidden gap-1.5 justify-center items-center mt-1 w-full">
+                {Array.from({ length: blogStoriesCount }).map((_, idx) => {
+                  const isActive = idx === blogActiveIndex;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setIsBlogPaused(true);
+                        setBlogActiveIndex(idx);
+                        const container = blogScrollRef.current;
+                        if (container) {
+                          const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+                          const gap = 16;
+                          container.scrollTo({
+                            left: idx * (cardWidth + gap),
+                            behavior: "smooth"
+                          });
+                        }
+                        if (blogTouchTimeoutRef.current) clearTimeout(blogTouchTimeoutRef.current);
+                        blogTouchTimeoutRef.current = setTimeout(() => {
+                          setIsBlogPaused(false);
+                        }, 8000);
+                      }}
+                      className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                        isActive ? "w-5 bg-[#D50032]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
@@ -1735,6 +1844,18 @@ export default function MarketingHome() {
 
             {/* Cards Grid / Carousel */}
             <div
+              ref={whyChooseScrollRef}
+              onScroll={handleWhyChooseScroll}
+              onTouchStart={() => {
+                setIsWhyChoosePaused(true);
+                if (whyChooseTouchTimeoutRef.current) clearTimeout(whyChooseTouchTimeoutRef.current);
+              }}
+              onTouchEnd={() => {
+                if (whyChooseTouchTimeoutRef.current) clearTimeout(whyChooseTouchTimeoutRef.current);
+                whyChooseTouchTimeoutRef.current = setTimeout(() => {
+                  setIsWhyChoosePaused(false);
+                }, 8000);
+              }}
               className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto md:overflow-x-visible pb-6 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 -mx-4 md:px-0 md:mx-0 items-stretch"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
@@ -1773,6 +1894,38 @@ export default function MarketingHome() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Mobile Dot Indicators for Why Choose Section */}
+            <div className="flex md:hidden gap-1.5 justify-center items-center mt-4 w-full">
+              {Array.from({ length: whyChooseCardsCount }).map((_, idx) => {
+                const isActive = idx === whyChooseActiveIndex;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setIsWhyChoosePaused(true);
+                      setWhyChooseActiveIndex(idx);
+                      const container = whyChooseScrollRef.current;
+                      if (container) {
+                        const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+                        const gap = 24;
+                        container.scrollTo({
+                          left: idx * (cardWidth + gap),
+                          behavior: "smooth"
+                        });
+                      }
+                      if (whyChooseTouchTimeoutRef.current) clearTimeout(whyChooseTouchTimeoutRef.current);
+                      whyChooseTouchTimeoutRef.current = setTimeout(() => {
+                        setIsWhyChoosePaused(false);
+                      }, 8000);
+                    }}
+                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      isActive ? "w-5 bg-[#D50032]" : "w-1.5 bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                );
+              })}
             </div>
 
           </div>

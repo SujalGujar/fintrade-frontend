@@ -2,11 +2,11 @@ import ExpertProfile from "../components/home/ExpertProfile";
 
 export default function AboutUs() {
   return (
-    <div className="min-h-screen bg-[#fafafa] py-16 relative z-10 overflow-hidden">
+    <div className="min-h-screen bg-[#fafafa] pt-8 md:pt-14 pb-4 md:pb-6 relative z-10 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 md:mb-12">
           <div className="inline-flex items-center gap-1.5 px-4.5 py-1.5 rounded-full mb-3 border border-[#D50032]/25 bg-[#D50032]/5">
             <span className="text-[#D50032] font-extrabold text-xs tracking-wider uppercase flex items-center gap-1">
               🚨 Who We Are
@@ -21,7 +21,7 @@ export default function AboutUs() {
         </div>
 
         {/* High-Impact Performance Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16 select-none">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-8 md:mb-12 select-none">
           {[
             { value: "1,200+", label: "Students Trained" },
             { value: "95%", label: "Failure Rate Addressed" },
@@ -42,7 +42,7 @@ export default function AboutUs() {
         </div>
 
         {/* Main Content Double Columns */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto items-stretch select-none mb-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto items-stretch select-none mb-8 md:mb-12">
           
           {/* Column 1: About Us & Growth Trajectory Curve (Left) */}
           <div className="flex">
@@ -270,7 +270,7 @@ export default function AboutUs() {
         </div>
 
         {/* Leadership Section at bottom */}
-        <div className="mt-12 border-t border-gray-100/90 pt-8">
+        <div className="mt-8 border-t border-gray-200/60 pt-6">
           <ExpertProfile />
         </div>
 

@@ -15,7 +15,7 @@ interface CareerDetail {
 }
 
 export default function CareerPathways() {
-  const [activeNode, setActiveNode] = useState<number | null>(null);
+  const [activeNode, setActiveNode] = useState<number>(0);
 
   const careerData: CareerDetail[] = [
     {
@@ -117,7 +117,6 @@ export default function CareerPathways() {
                   <div className="animate-orbit-node-1 orbit-node-animate">
                     <button 
                       onMouseEnter={() => setActiveNode(0)}
-                      onMouseLeave={() => setActiveNode(null)}
                       onTouchStart={() => setActiveNode(0)}
                       className={`w-9 h-9 md:w-12 md:h-12 rounded-full border-2 border-[#D50032] bg-white flex items-center justify-center shadow-lg transition-transform duration-300 cursor-pointer ${activeNode === 0 ? 'scale-120' : 'hover:scale-115'}`}
                       aria-label="Trading Roles Pathway"
@@ -140,7 +139,6 @@ export default function CareerPathways() {
                   <div className="animate-orbit-node-2 orbit-node-animate">
                     <button 
                       onMouseEnter={() => setActiveNode(1)}
-                      onMouseLeave={() => setActiveNode(null)}
                       onTouchStart={() => setActiveNode(1)}
                       className={`w-9 h-9 md:w-12 md:h-12 rounded-full border-2 border-blue-500 bg-white flex items-center justify-center shadow-lg transition-transform duration-300 cursor-pointer ${activeNode === 1 ? 'scale-120' : 'hover:scale-115'}`}
                       aria-label="Research & Analyst Pathway"
@@ -163,7 +161,6 @@ export default function CareerPathways() {
                   <div className="animate-orbit-node-3 orbit-node-animate">
                     <button 
                       onMouseEnter={() => setActiveNode(2)}
-                      onMouseLeave={() => setActiveNode(null)}
                       onTouchStart={() => setActiveNode(2)}
                       className={`w-9 h-9 md:w-12 md:h-12 rounded-full border-2 border-emerald-500 bg-white flex items-center justify-center shadow-lg transition-transform duration-300 cursor-pointer ${activeNode === 2 ? 'scale-120' : 'hover:scale-115'}`}
                       aria-label="Broking & Advisory Pathway"
@@ -186,7 +183,6 @@ export default function CareerPathways() {
                   <div className="animate-orbit-node-4 orbit-node-animate">
                     <button 
                       onMouseEnter={() => setActiveNode(3)}
-                      onMouseLeave={() => setActiveNode(null)}
                       onTouchStart={() => setActiveNode(3)}
                       className={`w-9 h-9 md:w-12 md:h-12 rounded-full border-2 border-purple-500 bg-white flex items-center justify-center shadow-lg transition-transform duration-300 cursor-pointer ${activeNode === 3 ? 'scale-120' : 'hover:scale-115'}`}
                       aria-label="Institutional & Corporate Pathway"
@@ -204,115 +200,80 @@ export default function CareerPathways() {
           <div className="lg:col-span-5 flex flex-col justify-center h-full">
             <div className="relative w-full min-h-[360px] bg-[#FAFBFD] border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-[0_15px_40px_rgba(0,0,0,0.015)] transition-all duration-500">
               
-              {activeNode !== null ? (
-                // Pathway Detail State
-                <div className="space-y-5 animate-fade-in">
-                  {/* Category Pill Tag */}
-                  <div 
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase border"
-                    style={{ 
-                      backgroundColor: careerData[activeNode].bgLight, 
-                      color: careerData[activeNode].color,
-                      borderColor: careerData[activeNode].borderLight
-                    }}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: careerData[activeNode].color }} />
+              {/* Pathway Detail State */}
+              <div className="space-y-5 animate-fade-in" key={activeNode}>
+                {/* Category Pill Tag */}
+                <div 
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase border"
+                  style={{ 
+                    backgroundColor: careerData[activeNode].bgLight, 
+                    color: careerData[activeNode].color,
+                    borderColor: careerData[activeNode].borderLight
+                  }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: careerData[activeNode].color }} />
+                  {careerData[activeNode].title}
+                </div>
+
+                {/* Title & Entry Salary */}
+                <div>
+                  <h4 className="text-2xl font-black text-gray-950 tracking-tight leading-tight flex items-center gap-2">
                     {careerData[activeNode].title}
-                  </div>
-
-                  {/* Title & Entry Salary */}
-                  <div>
-                    <h4 className="text-2xl font-black text-gray-950 tracking-tight leading-tight flex items-center gap-2">
-                      {careerData[activeNode].title}
-                      <ArrowUpRight className={`w-5 h-5 ${careerData[activeNode].iconColor}`} />
-                    </h4>
-                    
-                    <div className="flex items-center gap-1.5 mt-2.5 text-gray-700">
-                      <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
-                        <DollarSign className="w-4.5 h-4.5 stroke-[2.5]" />
-                      </div>
-                      <div className="text-sm font-bold">
-                        Average Entry Salary: <span className="text-gray-900 font-extrabold">{careerData[activeNode].salaryRange}</span>
-                      </div>
+                    <ArrowUpRight className={`w-5 h-5 ${careerData[activeNode].iconColor}`} />
+                  </h4>
+                  
+                  <div className="flex items-center gap-1.5 mt-2.5 text-gray-700">
+                    <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+                      <DollarSign className="w-4.5 h-4.5 stroke-[2.5]" />
                     </div>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    {careerData[activeNode].desc}
-                  </p>
-
-                  <div className="w-full h-[1px] bg-gray-100" />
-
-                  {/* Typical Roles */}
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                      Typical Opportunities
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {careerData[activeNode].roles.map((role, rIdx) => (
-                        <span 
-                          key={rIdx} 
-                          className="px-2.5 py-1 text-[11px] font-bold text-gray-700 bg-white border border-gray-100 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:border-gray-200 transition-colors"
-                        >
-                          {role}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Required Skills */}
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                      Key Competencies Taught
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {careerData[activeNode].skills.map((skill, sIdx) => (
-                        <span 
-                          key={sIdx} 
-                          className="px-2.5 py-1 text-[11px] font-extrabold text-[#D50032] bg-[#D50032]/5 border border-[#D50032]/10 rounded-lg"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
-              ) : (
-                // Default Placeholder State
-                <div className="flex flex-col justify-between h-full min-h-[300px] space-y-6">
-                  <div className="space-y-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase border border-gray-200 bg-gray-50 text-gray-500">
-                      <Award className="w-3.5 h-3.5" />
-                      Placement Metrics
-                    </div>
-                    <h4 className="text-2xl font-black text-gray-950 tracking-tight leading-tight">
-                      Corporate Placement Ecosystem
-                    </h4>
-                    <p className="text-gray-500 text-sm leading-relaxed">
-                      FinTrade provides customized end-to-end guidance, industry-recognized certificates, and deep connections with India's premium financial institutions.
-                    </p>
-                    <p className="text-xs text-gray-400 font-medium tracking-wide">
-                      👈 Hover any colored node on the left orbit map to explore typical job roles, responsibilities, average salaries, and key required skills.
-                    </p>
-                  </div>
-
-                  <div className="w-full h-[1px] bg-gray-100" />
-
-                  {/* Highlights Grid */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-2xl font-black text-[#D50032] leading-none">₹22 LPA</div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Highest Package</div>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-black text-gray-900 leading-none">94%</div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Hiring Rate (60d)</div>
+                    <div className="text-sm font-bold">
+                      Average Entry Salary: <span className="text-gray-900 font-extrabold">{careerData[activeNode].salaryRange}</span>
                     </div>
                   </div>
                 </div>
-              )}
+
+                {/* Description */}
+                <p className="text-gray-500 text-sm leading-relaxed font-medium">
+                  {careerData[activeNode].desc}
+                </p>
+
+                <div className="w-full h-[1px] bg-gray-100" />
+
+                {/* Typical Roles */}
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                    Typical Opportunities
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {careerData[activeNode].roles.map((role, rIdx) => (
+                      <span 
+                        key={rIdx} 
+                        className="px-2.5 py-1 text-[11px] font-bold text-gray-700 bg-white border border-gray-100 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:border-gray-200 transition-colors"
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Required Skills */}
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                    Key Competencies Taught
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {careerData[activeNode].skills.map((skill, sIdx) => (
+                      <span 
+                        key={sIdx} 
+                        className="px-2.5 py-1 text-[11px] font-extrabold text-[#D50032] bg-[#D50032]/5 border border-[#D50032]/10 rounded-lg"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
 
             </div>
           </div>

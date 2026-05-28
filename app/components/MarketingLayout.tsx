@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router";
-import { Search, Phone, Instagram, Facebook, Youtube, Linkedin, X, Download, UserCircle, Save, Mail, Smartphone } from "lucide-react";
+import { Search, Phone, Instagram, Facebook, Youtube, Linkedin, X, Download, UserCircle, Save, Mail, Smartphone, Menu, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
@@ -12,9 +12,15 @@ export default function MarketingLayout() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHomePage = pathname === "/";
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -205,11 +211,111 @@ export default function MarketingLayout() {
                     Login
                   </Button>
                 </Link>
-              )}
+              {/* Mobile Sidebar Hamburger Trigger */}
+              <button
+                onClick={() => setMenuOpen(true)}
+                className="w-8 h-8 rounded-full flex md:hidden items-center justify-center transition-all text-gray-600 hover:text-[#D50032] hover:bg-[#D50032]/10 ml-1"
+                title="Open Navigation"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Drawer Navigation Sidebar */}
+      <div 
+        className={`fixed inset-0 z-[9999] md:hidden transition-opacity duration-300 ${
+          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop overlay */}
+        <div 
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          onClick={() => setMenuOpen(false)}
+        />
+        
+        {/* Drawer slide-in panel */}
+        <div 
+          className={`absolute right-0 top-0 bottom-0 w-[290px] bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col transition-transform duration-300 ease-out transform ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-[#121212]/5">
+            <div className="h-8 flex items-center overflow-hidden">
+              <img
+                src={logo}
+                alt="FinTrade"
+                className="h-full w-auto object-contain scale-[2.2] -translate-x-1"
+                style={{
+                  filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.05))"
+                }}
+              />
+            </div>
+            <button 
+              onClick={() => setMenuOpen(false)}
+              className="w-8 h-8 rounded-full bg-white/80 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#D50032] hover:bg-[#D50032]/10 transition-colors shadow-sm"
+            >
+              <X className="h-4.5 w-4.5" />
+            </button>
+          </div>
+
+          {/* Nav Links */}
+          <div className="flex-1 overflow-y-auto py-4">
+            <nav className="flex flex-col space-y-1 px-4">
+              {[
+                { name: "Home", path: "/" },
+                { name: "Courses", path: "/courses" },
+                { name: "Markets", path: "/markets" },
+                { name: "Categories", path: "/category/all" },
+                { name: "Updates", path: "/updates" },
+                { name: "Blog", path: "/blog" },
+                { name: "About Us", path: "/about" },
+              ].map((link) => {
+                const isActive = pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`flex items-center justify-between px-4 py-3.5 rounded-2xl font-black text-sm transition-all group ${
+                      isActive 
+                        ? "bg-[#D50032] text-white shadow-md shadow-[#D50032]/25" 
+                        : "text-gray-700 hover:bg-[#D50032]/5 hover:text-[#D50032]"
+                    }`}
+                  >
+                    <span>{link.name}</span>
+                    <ChevronRight className={`h-4 w-4 transition-transform group-hover:translate-x-1 ${isActive ? "text-white" : "text-gray-400 group-hover:text-[#D50032]"}`} />
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Footer inside mobile sidebar */}
+          <div className="p-5 border-t border-gray-100 bg-gray-50/50 flex flex-col gap-4">
+            <a href="tel:+919876543210" className="flex items-center justify-center gap-2 text-white bg-[#D50032] py-3.5 rounded-2xl font-bold shadow-[0_0_15px_rgba(213,0,50,0.35)] hover:bg-[#FF0000] active:scale-98 transition-all duration-300 w-full text-sm">
+              <Phone className="h-4 w-4 fill-current" /> Call Support
+            </a>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Connect with us</span>
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              {[
+                { icon: Instagram, href: "https://www.instagram.com/the.fintrade/", label: "Instagram" },
+                { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61589528075521", label: "Facebook" },
+                { icon: Youtube, href: "https://www.youtube.com/@The_FinTrade", label: "YouTube" },
+                { icon: Linkedin, href: "https://www.linkedin.com/in/the-fintrade-7230b040a/", label: "LinkedIn" },
+              ].map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white border border-gray-150 flex items-center justify-center text-gray-500 hover:text-[#D50032] hover:border-[#D50032]/35 shadow-sm transition-all" title={s.label}>
+                  <s.icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <main className="flex-1 flex flex-col">
         <Outlet />
