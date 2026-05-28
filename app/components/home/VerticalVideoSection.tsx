@@ -78,7 +78,7 @@ export default function VerticalVideoSection() {
   };
 
   return (
-    <section className="py-8 relative z-10 bg-[#FAFAFA] border-t border-b border-gray-100 overflow-hidden">
+    <section className="pt-2 pb-6 md:py-8 relative z-10 bg-[#FAFAFA] border-t border-b border-gray-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
         {/* Header Block */}

@@ -45,7 +45,7 @@ export default function EMIHighlight() {
   ];
 
   return (
-    <section className="py-6 bg-[#fafafa] relative z-10 overflow-hidden">
+    <section className="py-4 md:py-6 bg-[#fafafa] relative z-10 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

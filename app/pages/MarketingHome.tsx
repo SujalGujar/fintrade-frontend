@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router";
 import api from "../services/api";
 import { Play, TrendingUp, Award, Users, BookOpen, LineChart, Video, CheckCircle, Star, ArrowRight, BarChart3, Brain, Target, Trophy, X, FileText, Search, Phone, Download, Instagram, Youtube, Linkedin, Twitter, Facebook, ChevronRight, ChevronLeft, ChevronDown, Shield, UserCheck, Monitor, Wifi, Activity, ClipboardCheck, GitBranch, Cpu, Clock } from "lucide-react";
@@ -649,6 +649,49 @@ export default function MarketingHome() {
   const [marketUpdates, setMarketUpdates] = useState<any[]>([]);
   const [selectedCourseForCheckout, setSelectedCourseForCheckout] = useState<any | null>(null);
 
+  // States and refs for premium mobile autoslide behavior
+  const coursesContainerRef = useRef<HTMLDivElement>(null);
+  const [activeCourseIdx, setActiveCourseIdx] = useState(0);
+  const [isCoursesPaused, setIsCoursesPaused] = useState(false);
+  const touchTimeoutRef = useRef<any>(null);
+
+  const coursesCount = (apiCourses.length > 0 ? apiCourses : Array(3)).slice(0, 3).length;
+
+  // Handle manual scroll synchronization
+  const handleCoursesScroll = () => {
+    if (!coursesContainerRef.current) return;
+    const container = coursesContainerRef.current;
+    const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+    const gap = 24; // gap-6
+    const scrollLeft = container.scrollLeft;
+    const currentIdx = Math.round(scrollLeft / (cardWidth + gap));
+    if (currentIdx !== activeCourseIdx && currentIdx >= 0 && currentIdx < coursesCount) {
+      setActiveCourseIdx(currentIdx);
+    }
+  };
+
+  // Autoslide Timer on Mobile
+  useEffect(() => {
+    if (isCoursesPaused) return;
+
+    const timer = setInterval(() => {
+      if (window.innerWidth < 768 && coursesContainerRef.current) {
+        const nextIdx = (activeCourseIdx + 1) % coursesCount;
+        setActiveCourseIdx(nextIdx);
+
+        const container = coursesContainerRef.current;
+        const cardWidth = container.firstElementChild?.getBoundingClientRect().width || 0;
+        const gap = 24;
+        container.scrollTo({
+          left: nextIdx * (cardWidth + gap),
+          behavior: "smooth"
+        });
+      }
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [activeCourseIdx, isCoursesPaused, coursesCount]);
+
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -832,7 +875,7 @@ export default function MarketingHome() {
             </p>
 
             {/* Action Buttons Row */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4.5 max-w-2xl mx-auto mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4.5 max-w-2xl mx-auto mb-6">
               <Link to={isAuthenticated ? "/student/courses" : "/register"} className="w-full sm:w-auto">
                 <Button
                   size="lg"
@@ -864,7 +907,7 @@ export default function MarketingHome() {
             </div>
 
             {/* High-Impact Performance Metrics Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16 relative py-6 px-4 bg-white/[0.02] border border-white/5 backdrop-blur-sm rounded-[24px]">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-6 relative py-6 px-4 bg-white/[0.02] border border-white/5 backdrop-blur-sm rounded-[24px]">
               {[
                 { val: "250+", lbl: "Traders Trained" },
                 { val: "₹25Cr+", lbl: "Capital Managed" },
@@ -884,7 +927,7 @@ export default function MarketingHome() {
             </div>
 
             {/* Start Your Trading Career Slider Card */}
-            <div className="relative max-w-4xl mx-auto mt-6 bg-[#131b2e]/40 border border-white/10 rounded-[32px] p-8 md:p-10 text-center shadow-[0_30px_70px_rgba(0,0,0,0.4)] overflow-hidden select-none backdrop-blur-xl">
+            <div className="relative max-w-4xl mx-auto mt-2 bg-[#131b2e]/40 border border-white/10 rounded-[32px] p-8 md:p-10 text-center shadow-[0_30px_70px_rgba(0,0,0,0.4)] overflow-hidden select-none backdrop-blur-xl">
 
               {/* Subtle Red Top Accent Bar */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-1 bg-[#D50032] rounded-b-full shadow-[0_0_15px_#D50032]" />
@@ -942,7 +985,7 @@ export default function MarketingHome() {
           </div>
         </section>
         {/* 1. Featured Courses Section */}
-        <section id="courses" className="py-8 relative z-10 bg-transparent">
+        <section id="courses" className="pt-6 pb-2 md:py-8 relative z-10 bg-transparent">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
               <div className="inline-block px-4 py-2 rounded-full mb-4 border border-[#D50032]/30" style={{ background: "rgba(213,0,50, 0.08)" }}>
@@ -954,7 +997,20 @@ export default function MarketingHome() {
               </p>
             </div>
             <div
-              className="flex md:grid md:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 -mx-4 md:px-0 md:mx-0 items-stretch"
+              ref={coursesContainerRef}
+              onScroll={handleCoursesScroll}
+              onMouseEnter={() => setIsCoursesPaused(true)}
+              onMouseLeave={() => setIsCoursesPaused(false)}
+              onTouchStart={() => {
+                setIsCoursesPaused(true);
+                if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+              }}
+              onTouchEnd={() => {
+                touchTimeoutRef.current = setTimeout(() => {
+                  setIsCoursesPaused(false);
+                }, 5000); // Resume autoslide after 5s of inactivity
+              }}
+              className="flex md:grid md:grid-cols-3 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible pt-5 pb-4 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 -mx-4 md:px-0 md:mx-0 items-stretch"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {(apiCourses.length > 0 ? apiCourses.map((c: any) => {
@@ -1026,7 +1082,7 @@ export default function MarketingHome() {
         </section>
 
         {/* 2. Live Classes Section */}
-        <section className="py-8 relative z-10" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(248,248,248,0.4) 100%)", backdropFilter: "blur(2px)" }}>
+        <section className="pt-2 pb-6 md:py-8 relative z-10" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(248,248,248,0.4) 100%)", backdropFilter: "blur(2px)" }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-6">
               <div className="inline-block px-4 py-2 rounded-full mb-4 border border-[#D50032]/30" style={{ background: "rgba(213,0,50,0.08)" }}>
@@ -1118,7 +1174,7 @@ export default function MarketingHome() {
         <ProgramModules apiCourses={apiCourses.length > 0 ? apiCourses : null} />
 
         {/* Program Benefits Section */}
-        <section className="py-8 bg-transparent relative z-10 overflow-hidden">
+        <section className="py-6 md:py-8 bg-transparent relative z-10 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full mb-4 border border-[#D50032]/20 bg-[#D50032]/5">
               <span className="text-xs font-bold text-[#D50032] flex items-center gap-1">
@@ -1173,7 +1229,7 @@ export default function MarketingHome() {
               100% { transform: translate3d(-50%, 0, 0); }
             }
             .animate-marquee {
-              animation: marquee 35s linear infinite;
+              animation: marquee 18s linear infinite;
             }
             .animate-marquee:hover {
               animation-play-state: paused;
@@ -1182,7 +1238,7 @@ export default function MarketingHome() {
           </div>
         </section>
         {/* Learning Path Section */}
-        <section className="py-8 bg-transparent relative z-10">
+        <section className="py-6 md:py-8 bg-transparent relative z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header */}
             <div className="text-center mb-12">
@@ -1420,7 +1476,7 @@ export default function MarketingHome() {
         </section>
 
         {/* Our Services Section */}
-        <section className="py-8 bg-transparent relative z-10 overflow-hidden border-t border-gray-50">
+        <section className="pt-6 pb-2 md:py-8 bg-transparent relative z-10 overflow-hidden border-t border-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full mb-4 border border-[#D50032]/20 bg-[#D50032]/5">
               <span className="text-xs font-bold text-[#D50032] flex items-center gap-1">
@@ -1468,7 +1524,7 @@ export default function MarketingHome() {
               100% { transform: translate3d(0, 0, 0); }
             }
             .animate-marquee-reverse {
-              animation: marquee-reverse 35s linear infinite;
+              animation: marquee-reverse 18s linear infinite;
             }
             .animate-marquee-reverse:hover {
               animation-play-state: paused;
@@ -1477,7 +1533,7 @@ export default function MarketingHome() {
           </div>
 
           {/* Highlight Quote Box */}
-          <div className="max-w-4xl mx-auto mt-16 px-6">
+          <div className="max-w-4xl mx-auto mt-2 md:mt-4 px-6">
             <div className="flex flex-col items-center">
               {/* Divider dot and lines */}
               <div className="flex items-center gap-3 mb-6 w-full max-w-[200px]">
@@ -1501,7 +1557,7 @@ export default function MarketingHome() {
         <VerticalVideoSection />
 
         {/* 5. FinTrade Blog Section */}
-        <section className="py-6 relative z-10 bg-transparent">
+        <section className="py-4 md:py-6 relative z-10 bg-transparent">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
               <div>
@@ -1661,7 +1717,7 @@ export default function MarketingHome() {
 
 
         {/* 8. Why Choose FinTrade */}
-        <section id="about" className="py-8 bg-white relative z-10 overflow-hidden">
+        <section id="about" className="py-6 md:py-8 bg-white relative z-10 overflow-hidden">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {/* Section Header */}
@@ -1723,7 +1779,7 @@ export default function MarketingHome() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-8 bg-[#fafafa] relative z-10 overflow-hidden">
+        <section className="py-6 md:py-8 bg-[#fafafa] relative z-10 overflow-hidden">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative bg-[#FFF5F6] border border-[#D50032]/8 rounded-[32px] p-8 md:p-12 text-center shadow-[0_15px_40px_rgba(213,0,50,0.02)] overflow-hidden select-none">
 
@@ -1764,63 +1820,6 @@ export default function MarketingHome() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-12 relative z-10" style={{ background: "#121212", color: "white" }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-              <div>
-                <h4 className="font-bold mb-4">Company</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li><a href="#about" className="hover:text-[#D50032] transition-colors">About Us</a></li>
-                  <li><a href="#" className="hover:text-[#D50032] transition-colors">Careers</a></li>
-                  <li><a href="#" className="hover:text-[#D50032] transition-colors">Press</a></li>
-                  <li><a href="#" className="hover:text-[#D50032] transition-colors">Blog</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-4">Courses</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li><Link to={isAuthenticated ? "/student/courses" : "/register"} className="hover:text-[#D50032] transition-colors">Basic Trading</Link></li>
-                  <li><Link to={isAuthenticated ? "/student/courses" : "/register"} className="hover:text-[#D50032] transition-colors">Intermediate Trading</Link></li>
-                  <li><Link to={isAuthenticated ? "/student/courses" : "/register"} className="hover:text-[#D50032] transition-colors">Advanced Trading</Link></li>
-                  <li><Link to={isAuthenticated ? "/student/courses" : "/register"} className="hover:text-[#D50032] transition-colors">Master Trading</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-4">Resources</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li><a href="#market-updates" className="hover:text-[#D50032] transition-colors">Market Updates</a></li>
-                  <li><Link to={isAuthenticated ? "/student/lectures" : "/login"} className="hover:text-[#D50032] transition-colors">Live Classes</Link></li>
-                  <li><Link to={isAuthenticated ? "/student/ai-tutor" : "/login"} className="hover:text-[#D50032] transition-colors">AI Tutor</Link></li>
-                  <li><a href="#" className="hover:text-[#D50032] transition-colors">Help Center</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-4">Contact</h4>
-                <ul className="space-y-2 text-gray-400">
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" style={{ color: "#D50032" }} />{cmsSettings.contact_email || "contact@fintrade.in"}</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" style={{ color: "#D50032" }} />{cmsSettings.contact_phone || "+91 98765 43210"}</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" style={{ color: "#D50032" }} />{cmsSettings.address || "Mumbai, India"}</li>
-                </ul>
-                <div className="flex gap-3 mt-4">
-                  {[
-                    { icon: Instagram, href: "https://www.instagram.com/the.fintrade/", label: "Instagram" },
-                    { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61589528075521", label: "Facebook" },
-                    { icon: Youtube, href: "https://www.youtube.com/@The_FinTrade", label: "YouTube" },
-                    { icon: Linkedin, href: "https://www.linkedin.com/in/the-fintrade-7230b040a/", label: "LinkedIn" },
-                  ].map((s, i) => (
-                    <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors" style={{ background: "rgba(213,0,50, 0.2)" }} title={s.label}>
-                      <s.icon className="h-5 w-5 text-white" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-              <p>© 2026 FinTrade. All rights reserved. Learn to Earn with Discipline.</p>
-            </div>
-          </div>
-        </footer>
         {/* Brochure Modal */}
         <Dialog open={brochureOpen} onOpenChange={setBrochureOpen}>
           <DialogContent className="sm:max-w-[425px]">

@@ -69,7 +69,7 @@ export default function CareerPathways() {
   ];
 
   return (
-    <section className="py-8 bg-white relative z-10 overflow-hidden">
+    <section className="py-6 md:py-8 bg-white relative z-10 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -94,7 +94,7 @@ export default function CareerPathways() {
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Side: Dynamic Concentric Orbits (lg:col-span-7) */}
-          <div className="lg:col-span-7 flex items-center justify-center relative min-h-[380px] md:min-h-[600px] overflow-hidden select-none">
+          <div className="lg:col-span-7 flex items-center justify-center relative min-h-[280px] sm:min-h-[340px] md:min-h-[600px] overflow-hidden select-none">
             <div className="relative w-full max-w-[340px] md:max-w-[560px] aspect-square flex items-center justify-center orbit-wrapper">
               
               {/* Central Core Circle (Your Career Logo) */}

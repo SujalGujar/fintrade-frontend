@@ -143,7 +143,7 @@ export default function ProgramModules({ apiCourses }: { apiCourses?: any[] | nu
   };
 
   return (
-    <section className="py-6 relative z-10 bg-transparent">
+    <section className="py-4 md:py-6 relative z-10 bg-transparent">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">

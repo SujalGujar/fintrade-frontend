@@ -153,7 +153,7 @@ export default function MarketingLayout() {
       </div>
 
       {/* Navbar */}
-      <nav className={`sticky top-0 z-[100] transition-all duration-300 ${isHomePage ? "bg-[#0b0f19]/95 border-b border-white/5 shadow-2xl backdrop-blur-xl" : "bg-white/90 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl"}`}>
+      <nav className="sticky top-0 z-[100] transition-all duration-300 bg-white/90 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo area */}
@@ -164,7 +164,7 @@ export default function MarketingLayout() {
                   alt="FinTrade"
                   className="h-9 md:h-12 w-auto object-contain"
                   style={{
-                    filter: isHomePage ? "brightness(0) invert(1) drop-shadow(0 4px 12px rgba(255,255,255,0.08))" : "drop-shadow(0 4px 12px rgba(0,0,0,0.08))"
+                    filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.08))"
                   }}
                 />
               </Link>
@@ -172,25 +172,25 @@ export default function MarketingLayout() {
             
             {/* Center navigation links */}
             <div className="hidden md:flex items-center gap-8">
-              <Link to="/" className={`${isHomePage ? "text-white hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Home</Link>
-              <Link to="/courses" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Courses</Link>
-              <Link to="/markets" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Markets</Link>
-              <Link to="/category/all" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Categories</Link>
-              <Link to="/updates" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Update</Link>
-              <Link to="/blog" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>Blog</Link>
-              <Link to="/about" className={`${isHomePage ? "text-white/80 hover:text-[#D50032]" : "text-gray-700 hover:text-[#D50032]"} transition-colors font-medium`}>About</Link>
+              <Link to="/" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Home</Link>
+              <Link to="/courses" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Courses</Link>
+              <Link to="/markets" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Markets</Link>
+              <Link to="/category/all" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Categories</Link>
+              <Link to="/updates" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Update</Link>
+              <Link to="/blog" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">Blog</Link>
+              <Link to="/about" className="text-gray-700 hover:text-[#D50032] transition-colors font-medium">About</Link>
             </div>
             
             {/* Right icons & login */}
             <div className="flex items-center gap-3">
-              <button onClick={() => setSearchOpen(true)} className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all ${isHomePage ? "text-white/80 hover:text-[#D50032] hover:bg-white/5" : "text-gray-600 hover:text-[#D50032] hover:bg-[#D50032]/10"}`} title="Search">
+              <button onClick={() => setSearchOpen(true)} className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all text-gray-600 hover:text-[#D50032] hover:bg-[#D50032]/10" title="Search">
                 <Search className="h-4 w-4 md:h-5 md:w-5" />
               </button>
               {isAuthenticated ? (
                 <button
                   type="button"
                   onClick={() => setProfileOpen(true)}
-                  className={`w-11 h-11 rounded-full flex items-center justify-center transition-all ${isHomePage ? "text-white/80 hover:text-[#D50032] hover:bg-white/5" : "text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10"}`}
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10"
                   title="Profile"
                   aria-label="Profile"
                 >
@@ -198,16 +198,12 @@ export default function MarketingLayout() {
                 </button>
               ) : (
                 <Link to="/login">
-                  {isHomePage ? (
-                    <Button className="bg-[#D50032] hover:bg-[#FF3D00] text-white rounded-xl shadow-lg shadow-[#D50032]/25 font-bold h-10 px-5 flex items-center gap-1.5 transition-all duration-300">
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
-                      </svg>
-                      Login
-                    </Button>
-                  ) : (
-                    <Button variant="ghost" className="text-gray-700 hover:text-[#D50032] hover:bg-[#D50032]/10" size="lg">Login</Button>
-                  )}
+                  <Button className="bg-[#D50032] hover:bg-[#FF3D00] text-white rounded-xl shadow-lg shadow-[#D50032]/25 font-bold h-10 px-5 flex items-center gap-1.5 transition-all duration-300">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
+                    </svg>
+                    Login
+                  </Button>
                 </Link>
               )}
             </div>

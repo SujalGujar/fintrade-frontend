@@ -5,7 +5,7 @@ export default function CertificatePreview() {
   const [isZoomed, setIsZoomed] = useState(false);
 
   return (
-    <section className="py-12 bg-[#fafafa] relative z-10 overflow-hidden">
+    <section className="py-6 md:py-12 bg-[#fafafa] relative z-10 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
